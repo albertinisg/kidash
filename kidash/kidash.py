@@ -24,12 +24,14 @@
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan, bulk
 import json
+import logging
 
 CHUNK_SIZE = 1000
 FILTER = {"query": {"filtered": {"query": {"match_all": {}},"filter": {"not": {"prefix": {"_id": "_"}}}}}}
 CLIENT_FILTER = {"query": {"filtered": {"query": {"prefix": {"_id": "_"}}}}}
 ALL = {"query": {"match_all": {}}}
 
+logger = logging.getLogger(__name__)
 
 class Kidash:
 

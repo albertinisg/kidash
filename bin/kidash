@@ -22,6 +22,7 @@
 #
 
 import argparse
+import logging
 import sys
 
 KIDASH_USAGE_MSG = \
@@ -33,14 +34,20 @@ from Kibana.
 
 optional arguments:
   -h, --help            show this help message and exit
+  -g, --debug           set debug mode on
 """
 
 KIDASH_EPILOG_MSG = \
 """Run '%(prog)s <action> --help' to get information about a specific action type."""
 
+# Logging formats
+KIDASH_LOG_FORMAT = "[%(asctime)s] - %(message)s"
+KIDASH_DEBUG_LOG_FORMAT = "[%(asctime)s - %(name)s - %(levelname)s] - %(message)s"
 
 def main():
     args = parse_args()
+
+    configure_logging(args.debug)
 
 
 def parse_args():
@@ -60,6 +67,24 @@ def parse_args():
         sys.exit(1)
 
     return parser.parse_args()
+
+def configure_logging(debug=False):
+    """Configure Kidash logging
+
+    The function configures the log messages produced by Kidash.
+    By default, log messages are sent to stderr. Set the parameter
+    `debug` to activate the debug mode.
+
+    :param debug: set the debug mode
+    """
+    if not debug:
+        logging.basicConfig(level=logging.INFO,
+                            format=KIDASH_LOG_FORMAT)
+        logging.getLogger('requests').setLevel(logging.WARNING)
+        logging.getLogger('urrlib3').setLevel(logging.WARNING)
+    else:
+        logging.basicConfig(level=logging.DEBUG,
+                            format=KIDASH_DEBUG_LOG_FORMAT)
 
 
 if __name__ == '__main__':
