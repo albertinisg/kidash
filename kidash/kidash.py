@@ -228,3 +228,50 @@ class ImportCommand(KidashCommand):
                             help="JSON file in Kibana format to be loaded.")
 
         return parser
+
+
+class ExportCommand(KidashCommand):
+    """Class to run Export action from the command line."""
+
+    def __init__(self, *args):
+        super().__init__(*args)
+
+        self.url = self.parsed_args.url
+        self.outputfile = self.parsed_args.outputfile
+        if self.parsed_args.doc_type:
+            self.doc_type = self.parsed_args.doc_type
+            self.action = Kidash(self.url, doc_type=self.doc_type)
+        else:
+            self.action = Kidash(self.url)
+
+    def run(self):
+        """Import JSON file into Kibana.
+
+        This method runs the action to load the elements available in the JSON
+        file into the Kibana dashboard.
+        """
+        if self.parsed_args.filter is 'filter':
+            self.action.export_items(self.outputfile, FILTER)
+        elif self.parsed_args.filter is 'client':
+            self.action.export_items(self.outputfile, CLIENT_FILTER)
+        else:
+            self.action.export_items(self.outputfile, ALL)
+
+    @classmethod
+    def create_argument_parser(cls):
+        """Returns the Import argument parser."""
+
+        parser = super().create_argument_parser()
+
+        parser.add_argument('outputfile', nargs='?', type=argparse.FileType('w'),
+                            help="JSON file where to export Kibana elements.")
+
+        group = parser.add_argument_group('general arguments')
+
+        group.add_argument('-t', '--doc-type', dest='doc_type',
+                           help="Document type. Available ones from Kibana are: "
+                           "'dashboard', 'visualization', 'search' and 'index-pattern'")
+        group.add_argument('-f', '--filter', dest='filter',
+                           help="Select a filter to export. Available ones are: "
+                           "'client', 'filtered' and 'all'")
+        return parser

@@ -37,6 +37,7 @@ from Kibana.
 Available actions:
 
     import           Import elements from a fiven JSON file (Kibana format)
+    export           Export elements from Kibana
 
 optional arguments:
   -h, --help            show this help message and exit
