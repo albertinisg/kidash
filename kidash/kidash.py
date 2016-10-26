@@ -25,6 +25,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan, bulk
 import json
 import logging
+import argparse
 
 CHUNK_SIZE = 1000
 FILTER = {"query": {"filtered": {"query": {"match_all": {}},"filter": {"not": {"prefix": {"_id": "_"}}}}}}
@@ -166,3 +167,33 @@ class Kidash:
             output_file.write('\n')
         except IOError as e:
             raise RuntimeError(str(e))
+
+
+class KidashCommand:
+    """Abstract class to run actions from the command line.
+
+    When the class is initialized, it parses the given arguments using
+    the defined argument parser on the class method. Those arguments
+    will be stored in the attribute 'parsed_args'.
+
+    The method 'run' must be implemented to exectute the action.
+    """
+    def __init__(self, *args):
+        parser = self.create_argument_parser()
+        self.parsed_args = parser.parse_args(args)
+
+    def run(self):
+        raise NotImplementedError
+
+    @classmethod
+    def create_argument_parser(cls):
+        """Returns a generic argument parser."""
+
+        parser = argparse.ArgumentParser()
+
+        # Required arguments
+
+        parser.add_argument('url',
+                            help="URL of the ES endpoint.")
+
+        return parser
