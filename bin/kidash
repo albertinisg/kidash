@@ -34,6 +34,10 @@ KIDASH_DESC_MSG = \
 """Import, export and delete dashboards, visualizations, searches and index patterns
 from Kibana.
 
+Available actions:
+
+    import           Import elements from a fiven JSON file (Kibana format)
+
 optional arguments:
   -h, --help            show this help message and exit
   -g, --debug           set debug mode on
@@ -85,6 +89,7 @@ def parse_args():
         sys.exit(1)
 
     return parser.parse_args()
+
 
 def configure_logging(debug=False):
     """Configure Kidash logging

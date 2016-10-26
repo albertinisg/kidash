@@ -34,6 +34,7 @@ ALL = {"query": {"match_all": {}}}
 
 logger = logging.getLogger(__name__)
 
+
 class Kidash:
 
     def __init__(self, url, index='.kibana', doc_type=None):
@@ -195,5 +196,35 @@ class KidashCommand:
 
         parser.add_argument('url',
                             help="URL of the ES endpoint.")
+
+        return parser
+
+
+class ImportCommand(KidashCommand):
+    """Class to run Import action from the command line."""
+
+    def __init__(self, *args):
+        super().__init__(*args)
+
+        self.url = self.parsed_args.url
+        self.filepath = self.parsed_args.filepath
+        self.action = Kidash(self.url)
+
+    def run(self):
+        """Import JSON file into Kibana.
+
+        This method runs the action to load the elements available in the JSON
+        file into the Kibana dashboard.
+        """
+        self.action.import_items(self.filepath)
+
+    @classmethod
+    def create_argument_parser(cls):
+        """Returns the Import argument parser."""
+
+        parser = super().create_argument_parser()
+
+        parser.add_argument('filepath',
+                            help="JSON file in Kibana format to be loaded.")
 
         return parser
