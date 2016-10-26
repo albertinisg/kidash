@@ -25,6 +25,8 @@ import argparse
 import logging
 import sys
 
+from kidash import KIDASH_CMDS
+
 KIDASH_USAGE_MSG = \
 """%(prog)s [-g] <action> [<args>] | --help """
 
@@ -44,10 +46,19 @@ KIDASH_EPILOG_MSG = \
 KIDASH_LOG_FORMAT = "[%(asctime)s] - %(message)s"
 KIDASH_DEBUG_LOG_FORMAT = "[%(asctime)s - %(name)s - %(levelname)s] - %(message)s"
 
+
 def main():
     args = parse_args()
 
     configure_logging(args.debug)
+
+    logging.info("Running Kidash action.")
+
+    klass = KIDASH_CMDS[args.action]
+    cmd = klass(*args.action_args)
+    cmd.run()
+
+    logging.info("Kidash action completed.")
 
 
 def parse_args():
@@ -60,6 +71,13 @@ def parse_args():
                                      add_help=False)
 
     parser.add_argument('-h', '--help', action='help',
+                        help=argparse.SUPPRESS)
+    parser.add_argument('-g', '--debug', dest='debug',
+                        action='store_true',
+                        help=argparse.SUPPRESS)
+
+    parser.add_argument('action', help=argparse.SUPPRESS)
+    parser.add_argument('action_args', nargs=argparse.REMAINDER,
                         help=argparse.SUPPRESS)
 
     if len(sys.argv) == 1:
