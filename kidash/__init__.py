@@ -22,11 +22,12 @@
 
 import logging
 
-from .kidash import ImportCommand, ExportCommand
+from .kidash import ImportCommand, ExportCommand, DeleteCommand
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 KIDASH_CMDS = {
                 'import': ImportCommand,
-                'export': ExportCommand
+                'export': ExportCommand,
+                'delete': DeleteCommand
               }

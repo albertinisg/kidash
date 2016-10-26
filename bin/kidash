@@ -38,6 +38,7 @@ Available actions:
 
     import           Import elements from a fiven JSON file (Kibana format)
     export           Export elements from Kibana
+    delete           Delete elements based on queries and using Bulk actions
 
 optional arguments:
   -h, --help            show this help message and exit
